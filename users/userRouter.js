@@ -1,4 +1,5 @@
 const express = require('express');
+const { validateUserID } = require("../middleware/user")
 
 const router = express.Router();
 
@@ -32,16 +33,54 @@ router.put('/:id', (req, res) => {
 
 //custom middleware
 
-function validateUserId(req, res, next) {
-  // do your magic!
+function validateUserId() {
+  return (req, res, next) => {
+      users.getById(req.params.id)
+          .then((user) => {
+              if (user) {
+                  // attach user data to the request so we can access later
+                  req.user = user
+                  // move on to next piece of middleware if user is valid
+                  next()
+              } else {
+                  // if user isn't found send error and don't move down the middleware stack
+                  res.status(404).json({
+                      message: "User not found"
+                  })
+              }
+          })
+          .catch(next)
+  }
 }
 
-function validateUser(req, res, next) {
-  // do your magic!
-}
+function validateUser() {
+  return (req, res, next) => {
+      if (!req.body) {
+          return res.status(400).json({
+              message: "Missing user data"
+          })
+      } else if (!req.body.name) {
+              return res.status(400).json({
+                  message: "Missing required name field"
+              })
+          }
+          next()
+      }
+  }
 
-function validatePost(req, res, next) {
-  // do your magic!
+function validatePost() {
+  return (req, res, next) => {
+    if (!req.body) {
+      return res.status(400).json({
+        message: "Missing post data"
+      })
+    } else if (!req.body.text) {
+      return res.status(400).json({
+        message: "Missing required text field"
+      })
+    }
+      next()
+   }
 }
 
 module.exports = router;
