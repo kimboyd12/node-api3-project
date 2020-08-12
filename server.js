@@ -6,8 +6,8 @@ const server = express();
 server.use(express.json())
 
 server.use(logger)
-server.use(userRouter)
-server.use(postRouter)
+server.use("/users", userRouter)
+server.use("/posts", postRouter)
 
 
 

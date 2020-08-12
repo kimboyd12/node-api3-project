@@ -1,14 +1,29 @@
-const express = require('express');
+const express = require('express')
+const postDb = require("./postDb")
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  // do your magic!
-});
+// router.get('/', validatePostId(), (req, res) => {
+//   postDb.get(req.query)
+//     .then((posts) => {
+//       res.status(200).json(posts)
+//     })
+//     .catch((error) => {
+//       next(error)
+//     })
+// });
 
-router.get('/:id', (req, res) => {
-  // do your magic!
-});
+// router.get('/:id', validatePostId(), (req, res) => {
+//   postDb.getById(req.params.id)
+//     .then((post) => {
+//       if (post) {
+//         res.status(200),json(post)
+//       }
+//     })
+//     .catch((error) => {
+//       next(error)
+//     })
+// });
 
 router.delete('/:id', (req, res) => {
   // do your magic!
@@ -22,7 +37,7 @@ router.put('/:id', (req, res) => {
 
 function validatePostId() {
   return (req, res, next) => {
-    posts.getById(req.params.id)
+    postDb.getById(req.params.id)
         .then((post) => {
           if (post) {
             req.post = post
@@ -33,7 +48,9 @@ function validatePostId() {
             })
           }
         })
-        .catch(next)
+        .catch((error) => {
+          next(error)
+        })
      }  
 }
 
